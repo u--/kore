@@ -37,6 +37,7 @@ import qualified Kore.Builtin.Bool as Bool
 import qualified Kore.Builtin.Builtin as Builtin
 import qualified Kore.Builtin.Hook as Hook
 import qualified Kore.Builtin.Int as Int
+import qualified Kore.Builtin.Map
 import           Kore.IndexedModule.IndexedModule
                  ( IndexedModule (..), KoreIndexedModule )
 import qualified Kore.IndexedModule.IndexedModule as IndexedModule
@@ -118,3 +119,7 @@ functionContext builtins indexedModule =
             name <- Hook.getHook hook
             impl <- Map.lookup name builtins
             pure [impl]
+
+    builtins :: Map String Builtin.Function
+    builtins =
+        Map.unions [Bool.builtinFunctions, Int.builtinFunctions, Kore.Builtin.Map.builtinFunctions]
