@@ -18,11 +18,13 @@ module Kore.Builtin.Map
     ( sort
     , sortDeclVerifiers
     , symbolVerifiers
+    , builtinFunctions
     ) where
 
 import           Control.Monad
                  ( void )
 import           Data.Functor.Foldable
+import           Data.Map
 import qualified Data.HashMap.Strict as HashMap
 import qualified Text.Megaparsec.Char.Lexer as Parsec
 
@@ -126,17 +128,17 @@ isHook
 isHook tools sym hookName = 
     hook (attributes tools sym) == Hook (Just hookName)
 
--- trivialExpandedPattern
---     :: MetaOrObject level 
---     => PureMLPattern level var 
---     -> ExpandedPattern level var
+trivialExpandedPattern
+    :: MetaOrObject level 
+    => PureMLPattern level var 
+    -> ExpandedPattern level var
 trivialExpandedPattern p = 
     ExpandedPattern p makeTruePredicate []
 
--- trivialEvalResult
---     :: (Applicative f, MetaOrObject level1) 
---     => PureMLPattern level1 variable
---     -> f (AttemptedFunction level1 variable, SimplificationProof level2)
+trivialEvalResult
+    :: (Applicative f, MetaOrObject level1) 
+    => PureMLPattern level1 variable
+    -> f (AttemptedFunction level1 variable, SimplificationProof level2)
 trivialEvalResult p = 
     pure (Applied (MultiOr [trivialExpandedPattern p]), SimplificationProof)
 
@@ -199,9 +201,9 @@ evalLookup =
 
 {- | Implement builtin function evaluation.
  -}
-builtinFunctions :: HashMap.HashMap String Builtin.Function
+builtinFunctions :: Map String Builtin.Function
 builtinFunctions = 
-  HashMap.fromList
+  fromList
     [
       ("MAP.bind", evalBind)
     , ("MAP.lookup", evalLookup)

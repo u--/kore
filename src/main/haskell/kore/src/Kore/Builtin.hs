@@ -35,6 +35,7 @@ import qualified Kore.Builtin.Bool as Bool
 import qualified Kore.Builtin.Builtin as Builtin
 import qualified Kore.Builtin.Hook as Hook
 import qualified Kore.Builtin.Int as Int
+import qualified Kore.Builtin.Map
 import           Kore.IndexedModule.IndexedModule
                  ( IndexedModule (..), KoreIndexedModule )
 import qualified Kore.IndexedModule.IndexedModule as IndexedModule
@@ -90,4 +91,4 @@ koreFunctionContext indexedModule =
 
     builtins :: Map String Builtin.Function
     builtins =
-        Map.union Bool.builtinFunctions Int.builtinFunctions
+        Map.unions [Bool.builtinFunctions, Int.builtinFunctions, Kore.Builtin.Map.builtinFunctions]
