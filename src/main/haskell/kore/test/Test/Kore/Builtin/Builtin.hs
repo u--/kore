@@ -1,11 +1,7 @@
 module Test.Kore.Builtin.Builtin where
 
-import Test.QuickCheck
-       ( Property, (===) )
-
 import           Data.Map
                  ( Map )
-import qualified Data.Map as Map
 import           Data.Proxy
                  ( Proxy (..) )
 
@@ -15,7 +11,6 @@ import           Kore.AST.MetaOrObject
 import           Kore.AST.PureML
                  ( CommonPurePattern )
 import           Kore.AST.Sentence
-import           Kore.ASTUtils.SmartPatterns
 import           Kore.ASTVerifier.DefinitionVerifier
 import           Kore.ASTVerifier.Error
                  ( VerifyError )

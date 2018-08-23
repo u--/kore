@@ -6,8 +6,6 @@ import Test.QuickCheck
 import           Data.Map
                  ( Map )
 import qualified Data.Map as Map
-import           Data.Proxy
-                 ( Proxy (..) )
 
 import           Kore.AST.Common
 import           Kore.AST.MetaOrObject
@@ -16,19 +14,9 @@ import           Kore.AST.PureML
                  ( CommonPurePattern )
 import           Kore.AST.Sentence
 import           Kore.ASTUtils.SmartPatterns
-import           Kore.ASTVerifier.DefinitionVerifier
-import           Kore.ASTVerifier.Error
-                 ( VerifyError )
 import qualified Kore.Builtin as Builtin
 import qualified Kore.Builtin.Bool as Bool
-import           Kore.Builtin.Hook
-                 ( hookAttribute )
-import qualified Kore.Error
 import           Kore.IndexedModule.IndexedModule
-import           Kore.IndexedModule.MetadataTools
-import           Kore.Step.ExpandedPattern
-import           Kore.Step.Simplification.Data
-import qualified Kore.Step.Simplification.Pattern as Pattern
 import           Kore.Step.StepperAttributes
                  ( StepperAttributes )
 
