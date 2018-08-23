@@ -14,6 +14,8 @@ builtin modules.
     import qualified Kore.Builtin.Int as Int
 @
  -}
+{-# OPTIONS_GHC -Wno-unused-matches #-}
+
 module Kore.Builtin.Map
     ( sort
     , sortDeclVerifiers
@@ -22,24 +24,17 @@ module Kore.Builtin.Map
     , builtinFunctions
     ) where
 
-import           Control.Monad
-                 ( void )
 import           Data.Functor.Foldable
 import           Data.Map
 import qualified Data.HashMap.Strict as HashMap
-import qualified Text.Megaparsec.Char.Lexer as Parsec
 
 import           Kore.AST.Common
 import           Kore.AST.MetaOrObject
 import           Kore.AST.PureML
 
 import           Kore.ASTUtils.SmartPatterns
-import           Kore.ASTUtils.SmartConstructors
 
 import           Kore.IndexedModule.MetadataTools
-
-import           Kore.Variables.Fresh.IntCounter 
- ( IntCounter )
 
 import           Kore.Step.Function.Data
 import           Kore.Step.StepperAttributes
@@ -58,14 +53,6 @@ import Debug.Trace
  -}
 sort :: String
 sort = "MAP.Map"
-
-{- | Verify that the sort is hooked to the builtin @Int@ sort.
-
-  See also: 'sort', 'Builtin.verifySort'
-
- -}
-assertSort :: Builtin.SortVerifier
-assertSort findSort = Builtin.verifySort findSort sort
 
 {- | Verify that hooked sort declarations are well-formed.
 
@@ -178,6 +165,7 @@ evalMerge =
       case pat of
         Application h [m1, m2]
          | isHook tools h "MAP.merge" -> trivialEvalResult $  goMerge m1 m2
+        _ -> failedToEval
       where 
         goMerge m1 m2 = undefined
 
@@ -203,6 +191,7 @@ evalLookup =
               if k == k' 
                 then trivialEvalResult v
                 else goFind k m'
+          _ -> failedToEval
 
 
 {- | Implement builtin function evaluation.
@@ -213,5 +202,6 @@ builtinFunctions =
     [
       ("MAP.bind", evalBind)
     , ("MAP.lookup", evalLookup)
-    , ("MAP.element", Builtin.notImplemented)
+    , ("MAP.element", evalElement)
+    , ("MAP.merge", evalMerge)
     ]

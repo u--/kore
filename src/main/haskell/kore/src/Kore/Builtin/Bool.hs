@@ -14,6 +14,9 @@ builtin modules.
     import qualified Kore.Builtin.Bool as Bool
 @
  -}
+
+{-# OPTIONS_GHC -Wno-unused-matches #-}
+
 module Kore.Builtin.Bool
     ( sort
     , assertSort

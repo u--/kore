@@ -13,6 +13,11 @@ This module is intended to be imported qualified.
     import qualified Kore.Builtin as Builtin
 @
  -}
+
+{-# OPTIONS_GHC -Wno-unused-matches #-}
+{-# OPTIONS_GHC -Wno-name-shadowing #-}
+
+
 module Kore.Builtin
     ( Builtin.Verifiers (..)
     , Builtin.PatternVerifier (..)

@@ -26,8 +26,6 @@ module Kore.Builtin.Int
 
 import           Control.Monad
                  ( void )
-import           Data.HashMap.Strict
-                 ( HashMap )
 import qualified Data.HashMap.Strict as HashMap
 import           Data.Map
                  ( Map )

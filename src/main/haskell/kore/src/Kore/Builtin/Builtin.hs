@@ -14,6 +14,9 @@ builtin modules.
     import qualified Kore.Builtin.Builtin as Builtin
 @
  -}
+
+{-# OPTIONS_GHC -Wno-unused-matches #-}
+
 module Kore.Builtin.Builtin
     (
       -- * Using builtin verifiers
