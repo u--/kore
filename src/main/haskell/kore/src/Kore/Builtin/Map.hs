@@ -18,7 +18,10 @@ module Kore.Builtin.Map
     ( sort
     , sortDeclVerifiers
     , symbolVerifiers
+<<<<<<< HEAD
     , patternVerifier
+=======
+>>>>>>> 0e8804ab1f0033c31291a078e22d8cbe41cf9324
     , builtinFunctions
     ) where
 
@@ -51,8 +54,6 @@ import           Kore.Builtin.Hook
 import qualified Kore.Builtin.Builtin as Builtin
 
 import Kore.Step.Simplification.Data
-
-import Debug.Trace
 
 {- | Builtin name of the @Map@ sort.
  -}
@@ -121,11 +122,14 @@ symbolVerifiers =
     trivialVerifier :: Builtin.SortVerifier
     trivialVerifier = const $ const $ Right ()
 
+<<<<<<< HEAD
 {- | Verify that domain value patterns are well-formed.
  -}
 patternVerifier :: Builtin.PatternVerifier
 patternVerifier = Builtin.PatternVerifier $ const $ const $ Right ()
 
+=======
+>>>>>>> 0e8804ab1f0033c31291a078e22d8cbe41cf9324
 isHook 
     :: MetadataTools Object StepperAttributes
     -> SymbolOrAlias Object
@@ -183,14 +187,14 @@ evalMerge =
 
 -- FIXME: proper equality modulo alpha?
 evalLookup :: Builtin.Function
-evalLookup =
+evalLookup = 
     ApplicationFunctionEvaluator evalLookup0
   where
-    evalLookup0 tools contEval pat =
+    evalLookup0 tools contEval pat = 
       case pat of
         Application h [k, m]
-         | hook (attributes tools h) == Hook (Just "MAP.lookup") -> trace "BOO" $ goFind k m
-        _ -> trace "FOO" $ failedToEval
+         | hook (attributes tools h) == Hook (Just "MAP.lookup") -> goFind k m
+        _ -> failedToEval
       where 
         goFind k m = case m of
           App_ h [k', v]
