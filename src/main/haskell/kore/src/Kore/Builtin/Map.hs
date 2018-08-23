@@ -18,10 +18,7 @@ module Kore.Builtin.Map
     ( sort
     , sortDeclVerifiers
     , symbolVerifiers
-<<<<<<< HEAD
     , patternVerifier
-=======
->>>>>>> 0e8804ab1f0033c31291a078e22d8cbe41cf9324
     , builtinFunctions
     ) where
 
