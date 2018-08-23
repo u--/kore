@@ -122,14 +122,11 @@ symbolVerifiers =
     trivialVerifier :: Builtin.SortVerifier
     trivialVerifier = const $ const $ Right ()
 
-<<<<<<< HEAD
 {- | Verify that domain value patterns are well-formed.
  -}
 patternVerifier :: Builtin.PatternVerifier
 patternVerifier = Builtin.PatternVerifier $ const $ const $ Right ()
 
-=======
->>>>>>> 0e8804ab1f0033c31291a078e22d8cbe41cf9324
 isHook 
     :: MetadataTools Object StepperAttributes
     -> SymbolOrAlias Object
