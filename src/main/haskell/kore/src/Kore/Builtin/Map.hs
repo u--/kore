@@ -47,11 +47,6 @@ import qualified Kore.Builtin.Builtin as Builtin
 
 import Kore.Step.Simplification.Data
 
-<<<<<<< HEAD
-import Debug.Trace
-
-=======
->>>>>>> bb4df2e801a608076e6af45d52e0a41277665eec
 {- | Builtin name of the @Map@ sort.
  -}
 sort :: String
