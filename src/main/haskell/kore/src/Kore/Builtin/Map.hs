@@ -47,8 +47,11 @@ import qualified Kore.Builtin.Builtin as Builtin
 
 import Kore.Step.Simplification.Data
 
+<<<<<<< HEAD
 import Debug.Trace
 
+=======
+>>>>>>> bb4df2e801a608076e6af45d52e0a41277665eec
 {- | Builtin name of the @Map@ sort.
  -}
 sort :: String
@@ -171,14 +174,14 @@ evalMerge =
 
 -- FIXME: proper equality modulo alpha?
 evalLookup :: Builtin.Function
-evalLookup =
+evalLookup = 
     ApplicationFunctionEvaluator evalLookup0
   where
-    evalLookup0 tools contEval pat =
+    evalLookup0 tools contEval pat = 
       case pat of
         Application h [k, m]
-         | hook (attributes tools h) == Hook (Just "MAP.lookup") -> trace "BOO" $ goFind k m
-        _ -> trace "FOO" $ failedToEval
+         | hook (attributes tools h) == Hook (Just "MAP.lookup") -> goFind k m
+        _ -> failedToEval
       where 
         goFind k m = case m of
           App_ h [k', v]
