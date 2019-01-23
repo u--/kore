@@ -1,0 +1,42 @@
+{-# LANGUAGE MagicHash #-}
+
+module Test.Kore.Builtin.Krypto where
+
+import Kore.Builtin.Krypto
+
+import Hedgehog
+import Test.Tasty
+import Test.Tasty.Hedgehog
+
+import           Data.ByteString
+                 ( ByteString )
+import qualified Data.ByteString as ByteString
+import           Data.Char
+--- messageHash = "!\\\x9f\x84\x95R\x9d\x10\xd1[h\xb2\x9aJ\xf2\xbe\x01\xda\xebeK\x0e.\xc2T_\xc0c\xa0\xe2\x89O"
+--- v = 28
+--- r = "\xc6R \xd2.\xe9S>i\xca\f\xcaO-\x90\xdb\xab\xd0\xdbq\xe8h\x83\xdd\xa7\x9aa5\xa8\x96\xc6\xc2"
+--- s = "\x14\x8c\x87*7X\xdb0\xe6\xcf\xf6=_\x8c\x11U\xbd\xf1=\x9a9\xbf\x99;B\xd3\xf2\xccz\fV\x8a"
+--- result = ":QAvFo\xa8\x15\xedH\x1f\xfa\xd0\x91\x10\xa2\xd3D\xf6\xc9\xb7\x8c\x1d\x14\xaf\xc3Q\xc3\xa5\x1b\xe3=\x80r\xe7y9\xdc\x03\xbaDy\x07y\xb7\xa1\x02[\xaf0\x03\xf6s$0\xe2\f\xd9\xb7m\x953\x91\xb3"
+
+-- messageHash = "!\\\x9f\x84\x95R\x9d\x10\xd1[h\xb2\x9aJ\xf2\xbe\x01\xda\xebeK\x0e.\xc2T_\xc0c\xa0\xe2\x89O"
+-- v = 28
+-- r = "\xc6R \xd2.\xe9S>i\xca\f\xcaO-\x90\xdb\xab\xd0\xdbq\xe8h\x83\xdd\xa7\x9aa5\xa8\x96\xc6\xc2"
+-- s = "\x14\x8c\x87*7X\xdb0\xe6\xcf\xf6=_\x8c\x11U\xbd\xf1=\x9a9\xbf\x99;B\xd3\xf2\xccz\fV\x8a"
+
+result :: ByteString
+result = ByteString.pack $ map (fromIntegral . ord)
+    ":QAvFo\xa8\x15\xedH\x1f\xfa\xd0\x91\x10\xa2\xd3\&D\xf6\xc9\xb7\x8c\x1d\x14\xaf\xc3Q\xc3\xa5\x1b\xe3=\x80r\xe7y9\xdc\x03\xba\&Dy\x07y\xb7\xa1\x02[\xaf\&0\x03\xf6s$0\xe2\f\xd9\xb7m\x95\&3\x91\xb3"
+
+messageHash, r, s, v :: Integer
+messageHash =
+  15089974885315018635048117977178679769108462490039486111180533326038884845903
+r =
+  89703052001210819637469085885472079930107054953827829360062608526196323305154
+s =
+  9294548434637607688470110121378327246579765741959727270498836499124148000394
+v =
+  28
+
+test_signatureToKey :: TestTree
+test_signatureToKey = testProperty "recover an example key" $ property $
+    signatureToKey messageHash r s v === result
