@@ -93,6 +93,9 @@ import           Kore.Variables.Free
                  ( pureAllVariables )
 import           Kore.Variables.Fresh
 
+
+import Debug.Trace
+
 {-| 'StepperConfiguration' represents the configuration to which a rewriting
 axiom is applied.
 
@@ -297,7 +300,7 @@ stepWithRule
         , right = axiomRightRaw
         , requires = axiomRequiresRaw
         }
-  = do
+  = trace "###stepWithRuleForUnifier" $ do
     -- Distinguish configuration (pattern) and axiom variables by lifting them
     -- into 'StepperVariable'.
     let
@@ -340,7 +343,7 @@ stepWithRule
     -- Unify the left-hand side of the rewriting axiom with the initial
     -- configuration, producing a substitution (instantiating the axiom to the
     -- configuration) subject to a predicate.
-    (rawOrPredicateSubstitution, rawSubstitutionProof) <-
+    (rawOrPredicateSubstitution, rawSubstitutionProof) <- trace "1" $ 
         normalizeUnificationOrSubstitutionError
             existingVars
             (unificationProcedure'
@@ -349,8 +352,8 @@ stepWithRule
                 axiomLeft
                 startPattern
             )
-    keepGoodResults $ return $ map
-        (applyUnificationToRhs
+    trace "2" $ keepGoodResults $ return $ map
+        (trace "3" $ applyUnificationToRhs
             tools
             substitutionSimplifier
             axiom
@@ -358,7 +361,7 @@ stepWithRule
             expandedPattern
             rawSubstitutionProof
         )
-        (OrOfExpandedPattern.extractPatterns rawOrPredicateSubstitution)
+        (trace "4" $ OrOfExpandedPattern.extractPatterns rawOrPredicateSubstitution)
 
 applyUnificationToRhs
     :: forall level variable .
@@ -402,7 +405,7 @@ applyUnificationToRhs
         {term = initialTerm, substitution = initialSubstitution}
     rawSubstitutionProof
     Predicated {predicate = rawPredicate, substitution = rawSubstitution}
-  = do
+  = trace "###applyUnificationToRhs" $ do
     let
         -- TODO(virgil): Some of the work is duplicated with the
         -- startPattern = mapVariables ConfigurationVariable initialTerm
@@ -426,7 +429,7 @@ applyUnificationToRhs
             , substitution = normalizedSubstitution
             }
         , _proof
-        ) <- stepperVariableToVariableForError existingVars
+        ) <- trace "#1" $ stepperVariableToVariableForError existingVars
             $ withExceptT unificationOrSubstitutionToStepError
             $ mergePredicatesAndSubstitutionsExcept
                 tools
@@ -446,7 +449,7 @@ applyUnificationToRhs
             , substitution = normalizedRemainderSubstitution
             }
         , _proof
-        ) <- stepperVariableToVariableForError existingVars
+        ) <- trace "#2" $ stepperVariableToVariableForError existingVars
             $ withExceptT unificationOrSubstitutionToStepError
             $ mergePredicatesAndSubstitutionsExcept
                 tools
@@ -486,7 +489,7 @@ applyUnificationToRhs
 
     let substitution = Substitution.toMap normalizedSubstitution
     -- Apply substitution to resulting configuration and conditions.
-    rawResult <- substitute substitution axiomRight
+    rawResult <- trace "#3" $ substitute substitution axiomRight
 
     let
         variablesInLeftAxiom =
@@ -509,19 +512,19 @@ applyUnificationToRhs
 
     -- Unwrap internal 'StepperVariable's and collect the variable mappings
     -- for the proof.
-    (variableMapping, result) <-
+    (variableMapping, result) <- trace "#4" $ 
         lift
         $ patternStepVariablesToCommon
             existingVars Map.empty rawResult
-    (variableMapping1, condition) <-
+    (variableMapping1, condition) <- trace "#5" $ 
         lift
         $ predicateStepVariablesToCommon
             existingVars variableMapping normalizedCondition
-    (variableMapping2, remainderPredicate) <-
+    (variableMapping2, remainderPredicate) <- trace "#6" $ 
         lift
         $ predicateStepVariablesToCommon
             existingVars variableMapping1 normalizedRemainderPredicate
-    (variableMapping3, substitutionProof) <-
+    (variableMapping3, substitutionProof) <- trace "#7" $ 
         lift
         $ unificationProofStepVariablesToCommon
             existingVars variableMapping2 rawSubstitutionProof
@@ -541,7 +544,7 @@ applyUnificationToRhs
     let
         orElse :: a -> a -> a
         p1 `orElse` p2 = if Predicate.isFalse condition then p2 else p1
-    return
+    trace "#8" $ return
         ( StepResult
             { rewrittenPattern = Predicated
                 { term = result `orElse` mkBottom_
@@ -632,7 +635,7 @@ stepWithRewriteRule
             , StepProof level variable
             )
         ]
-stepWithRewriteRule tools substitutionSimplifier patt (RewriteRule rule) =
+stepWithRewriteRule tools substitutionSimplifier patt (RewriteRule rule) = trace "###stepWithRule" $
     stepWithRule
             tools
             (UnificationProcedure unificationProcedure)

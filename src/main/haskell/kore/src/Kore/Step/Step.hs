@@ -65,6 +65,8 @@ import           Kore.Step.StepperAttributes
 import           Kore.Step.Strategy
 import qualified Kore.Step.Strategy as Strategy
 
+import Debug.Trace
+
 {- | A strategy primitive: a rewrite rule or builtin simplification step.
  -}
 data Prim rewrite = Simplify | Rewrite !rewrite
@@ -109,7 +111,7 @@ transitionRule tools substitutionSimplifier simplifier =
   where
     transitionSimplify (config, proof) =
         do
-            (configs, proof') <-
+            (configs, proof') <- trace "###ExpandedPattern.simplify" $ 
                 ExpandedPattern.simplify
                     tools substitutionSimplifier simplifier config
             let

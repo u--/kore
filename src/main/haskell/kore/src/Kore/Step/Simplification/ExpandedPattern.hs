@@ -38,6 +38,8 @@ import           Kore.Step.Substitution
 import           Kore.Unparser
 import           Kore.Variables.Fresh
 
+import Debug.Trace
+
 {-| Simplifies an 'ExpandedPattern', returning an 'OrOfExpandedPattern'.
 -}
 simplify
@@ -64,9 +66,9 @@ simplify
     substitutionSimplifier
     wrappedSimplifier@(StepPatternSimplifier simplifier)
     Predicated {term, predicate, substitution}
-  = do
+  = trace "###Kore.Step.ExpandedPattern.simplify" $ do
     (simplifiedTerm, _)
-        <- simplifier substitutionSimplifier term
+        <- trace "###Kore.Step.EP.simplify#1" $ simplifier substitutionSimplifier term
     (simplifiedPatt, _) <-
         OrOfExpandedPattern.traverseWithPairs
             (give tools $ ExpandedPattern.mergeWithPredicateSubstitution

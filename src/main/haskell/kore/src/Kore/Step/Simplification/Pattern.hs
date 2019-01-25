@@ -73,6 +73,8 @@ import           Kore.Step.StepperAttributes
 import           Kore.Unparser
 import           Kore.Variables.Fresh
 
+import Debug.Trace
+
 -- TODO(virgil): Add a Simplifiable class and make all pattern types
 -- instances of that.
 
@@ -128,7 +130,7 @@ simplifyToOr
         ( OrOfExpandedPattern level variable
         , SimplificationProof level
         )
-simplifyToOr tools symbolIdToEvaluator substitutionSimplifier patt =
+simplifyToOr tools symbolIdToEvaluator substitutionSimplifier patt = trace "###simplifyToOr" $ 
     simplifyInternal
         tools
         substitutionSimplifier

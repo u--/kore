@@ -52,6 +52,7 @@ import           Data.Maybe
 import           Prelude hiding
                  ( all, and, any, or, replicate, seq, sequence )
 
+import Debug.Trace
 
 assert :: Bool -> a -> a
 assert b a = if b then a else error "assertion failed"
@@ -249,7 +250,7 @@ constructExecutionHistory transit instrs0 config0 =
             else (newPool :) <$> step instrs newPool
 
     getChildNodes :: instr -> ConfigNode config -> m [ConfigNode config]
-    getChildNodes instr (ConfigNode config timestep node _) = do
+    getChildNodes instr (ConfigNode config timestep node _) = trace ("###execute t = " ++ show timestep) $ do
         children <- transit instr config
         pure
             [ ConfigNode

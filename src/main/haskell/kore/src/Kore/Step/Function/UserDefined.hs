@@ -53,6 +53,8 @@ import           Kore.Unparser
                  ( Unparse )
 import           Kore.Variables.Fresh
 
+import Debug.Trace
+
 {-| 'ruleFunctionEvaluator' evaluates a user-defined function. After
 evaluating the function, it tries to re-evaluate all functions on the result.
 
@@ -98,7 +100,7 @@ ruleFunctionEvaluator
     case result of
         Left _ ->
             notApplicable
-        Right results -> do
+        Right results -> trace "###Right" $ do
             processedResults <- mapM processResult results
             return
                 ( AttemptedFunction.Applied
@@ -117,7 +119,7 @@ ruleFunctionEvaluator
             (UnificationProcedure matchAsUnification)
             substitutionSimplifier
             (stepperConfiguration app)
-            rule
+            (traceShow "###rule=" $ rule)
 
     stepperConfiguration
         :: MetaOrObject level

@@ -48,12 +48,9 @@ import           Data.String
                  ( IsString, fromString )
 import           Data.Text
                  ( Text )
-<<<<<<< HEAD
 import qualified Data.Text.Encoding as Text
-=======
 import           Data.Word
                  ( Word8 )
->>>>>>> Implemented KRYPTO.ecdsaRecover hook
 
 import qualified Kore.Builtin.Builtin as Builtin
 import qualified Kore.Builtin.Int as Int
@@ -61,6 +58,8 @@ import qualified Kore.Builtin.String as String
 
 import Control.Exception.Base
        ( assert )
+
+import Debug.Trace
 
 keccakKey :: IsString s => s
 keccakKey = "KRYPTO.keccak256"
@@ -152,7 +151,7 @@ signatureToKey
     -> Integer
     -> Integer
     -> ByteString
-signatureToKey messageHash r s v =
+signatureToKey (traceShowId -> messageHash) (traceShowId -> r) (traceShowId -> s) (traceShowId -> v) = traceShowId $ 
     assert (28 <= v && v <= 34)
   $ ByteString.drop 1
   $ encodePoint compressed
