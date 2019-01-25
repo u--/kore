@@ -300,7 +300,7 @@ stepWithRule
         , right = axiomRightRaw
         , requires = axiomRequiresRaw
         }
-  = trace "###stepWithRuleForUnifier" $ do
+  = trace "###S.BS.stepWithRuleForUnifier" $ do
     -- Distinguish configuration (pattern) and axiom variables by lifting them
     -- into 'StepperVariable'.
     let

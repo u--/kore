@@ -66,6 +66,8 @@ import           Kore.Step.StepperAttributes
 import           Kore.Unparser
 import           Kore.Variables.Fresh
 
+import Debug.Trace
+
 {-| 'evaluateApplication' - evaluates functions on an application pattern.
 -}
 evaluateApplication
@@ -103,7 +105,7 @@ evaluateApplication
     symbolIdToEvaluator
     childrenPredicateSubstitution
     validApp@(valid :< app)
-  =
+  = trace "###S.Func.Eval.evalApp" $ 
     case Map.lookup symbolId symbolIdToEvaluator of
         Nothing
           | give tools isSortInjection_ appHead ->
@@ -368,7 +370,7 @@ reevaluateFunctions
         , predicate = rewritingCondition
         , substitution = rewrittenSubstitution
         }
-  = do
+  = trace "###Step.Func.Eval.reEvaluateFunctions" $ do
     (pattOr , _proof) <-
         simplifier substitutionSimplifier rewrittenPattern
     (mergedPatt, _proof) <-

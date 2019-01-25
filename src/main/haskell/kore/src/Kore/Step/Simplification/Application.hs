@@ -42,6 +42,8 @@ import           Kore.Step.Substitution
 import           Kore.Unparser
 import           Kore.Variables.Fresh
 
+import Debug.Trace
+
 type ExpandedApplication level variable =
     Predicated
         level

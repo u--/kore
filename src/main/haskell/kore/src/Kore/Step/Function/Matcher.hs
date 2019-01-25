@@ -67,6 +67,8 @@ import           Kore.Unparser
 import           Kore.Variables.Fresh
                  ( FreshVariable )
 
+import Debug.Trace
+
 {- Matches two patterns based on their form.
 
 Assumes that the two patterns have no common variables (quantified or not).

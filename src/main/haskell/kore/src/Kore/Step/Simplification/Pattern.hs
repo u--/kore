@@ -130,7 +130,7 @@ simplifyToOr
         ( OrOfExpandedPattern level variable
         , SimplificationProof level
         )
-simplifyToOr tools symbolIdToEvaluator substitutionSimplifier patt = trace "###simplifyToOr" $ 
+simplifyToOr tools symbolIdToEvaluator substitutionSimplifier patt = -- trace "###simplifyToOr" $ 
     simplifyInternal
         tools
         substitutionSimplifier
@@ -172,7 +172,7 @@ simplifyInternal
     -- TODO: Remove fst
     case fmap fst halfSimplified of
         AndPattern p -> And.simplify tools substitutionSimplifier p
-        ApplicationPattern p ->
+        ApplicationPattern p -> trace "###simplifyInternalApp" $
             --  TODO: Re-evaluate outside of the application and stop passing
             -- the simplifier.
             Application.simplify
