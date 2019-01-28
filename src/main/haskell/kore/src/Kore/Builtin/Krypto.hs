@@ -19,17 +19,11 @@ module Kore.Builtin.Krypto
     ( symbolVerifiers
     , builtinFunctions
     , keccakKey
-<<<<<<< HEAD
-=======
-    , keccakKeyT
     , signatureToKey
->>>>>>> Implemented KRYPTO.ecdsaRecover hook
     ) where
 
 import           Crypto.Hash
                  ( Digest, Keccak_256, hash )
-<<<<<<< HEAD
-=======
 import           Crypto.PubKey.ECC.Prim
 import           Crypto.PubKey.ECC.Types
 import           Data.Bits
@@ -39,7 +33,6 @@ import qualified Data.ByteString as ByteString
 import           Data.ByteString.Char8
                  ( pack )
 import           Data.Char
->>>>>>> Implemented KRYPTO.ecdsaRecover hook
 import qualified Data.HashMap.Strict as HashMap
 import           Data.Map
                  ( Map )
@@ -49,6 +42,7 @@ import           Data.String
 import           Data.Text
                  ( Text )
 import qualified Data.Text.Encoding as Text
+import qualified Data.Text as Text
 import           Data.Word
                  ( Word8 )
 
@@ -127,13 +121,13 @@ evalECDSARecover =
 eval0 :: Builtin.FunctionImplementation
 eval0 _ _ resultSort [messageHash0, v0, r0, s0] =
     Builtin.getAttemptedFunction $ do
-        messageHash <- s2i <$> String.expectBuiltinString "" messageHash0
+        messageHash <- s2i . Text.unpack <$> String.expectBuiltinString "" messageHash0
         v <- Int.expectBuiltinInt "" v0
-        r <- s2i <$> String.expectBuiltinString "" r0
-        s <- s2i <$> String.expectBuiltinString "" s0
+        r <- s2i . Text.unpack <$> String.expectBuiltinString "" r0
+        s <- s2i  .Text.unpack <$> String.expectBuiltinString "" s0
         Builtin.appliedFunction
             $ String.asExpandedPattern resultSort
-            $ bs2s
+            $ Text.pack . bs2s
             $ pad 64 0
             $ signatureToKey messageHash r s v
 eval0 _ _ _ _ = Builtin.wrongArity ecsdaRecover

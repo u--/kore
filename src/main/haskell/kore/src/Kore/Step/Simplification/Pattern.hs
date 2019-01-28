@@ -100,7 +100,7 @@ simplify
         ( ExpandedPattern level variable
         , SimplificationProof level
         )
-simplify tools substitutionSimplifier symbolIdToEvaluator patt = do
+simplify tools substitutionSimplifier symbolIdToEvaluator patt = trace "###simplifyToOr" $ do
     (orPatt, proof) <-
         simplifyToOr tools symbolIdToEvaluator substitutionSimplifier patt
     return
@@ -130,7 +130,7 @@ simplifyToOr
         ( OrOfExpandedPattern level variable
         , SimplificationProof level
         )
-simplifyToOr tools symbolIdToEvaluator substitutionSimplifier patt = -- trace "###simplifyToOr" $ 
+simplifyToOr tools symbolIdToEvaluator substitutionSimplifier patt = trace "###simplifyToOr" $ 
     simplifyInternal
         tools
         substitutionSimplifier

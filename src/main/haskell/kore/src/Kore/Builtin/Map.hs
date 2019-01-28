@@ -84,8 +84,6 @@ import           Kore.Step.Function.Data
                  ( AttemptedFunction (..) )
 import           Kore.Step.Pattern
 import           Kore.Step.Simplification.Data
-                 ( PredicateSubstitutionSimplifier, SimplificationProof (..),
-                 SimplificationType )
 import           Kore.Step.StepperAttributes
                  ( StepperAttributes )
 import qualified Kore.Step.StepperAttributes as StepperAttributes
