@@ -111,7 +111,7 @@ transitionRule tools substitutionSimplifier simplifier =
   where
     transitionSimplify (config, proof) =
         do
-            (configs, proof') <- trace "###ExpandedPattern.simplify" $ 
+            (configs, proof') <-
                 ExpandedPattern.simplify
                     tools substitutionSimplifier simplifier config
             let

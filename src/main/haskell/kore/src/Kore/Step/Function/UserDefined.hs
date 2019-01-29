@@ -100,7 +100,7 @@ ruleFunctionEvaluator
     case result of
         Left _ ->
             notApplicable
-        Right results -> trace "###Right" $ do
+        Right results -> do
             processedResults <- mapM processResult results
             return
                 ( AttemptedFunction.Applied
@@ -119,7 +119,7 @@ ruleFunctionEvaluator
             (UnificationProcedure matchAsUnification)
             substitutionSimplifier
             (stepperConfiguration app)
-            (traceShow "###rule=" $ rule)
+            rule
 
     stepperConfiguration
         :: MetaOrObject level

@@ -105,7 +105,7 @@ evaluateApplication
     symbolIdToEvaluator
     childrenPredicateSubstitution
     validApp@(valid :< app)
-  = trace "###S.Func.Eval.evalApp" $ 
+  =
     case Map.lookup symbolId symbolIdToEvaluator of
         Nothing
           | give tools isSortInjection_ appHead ->
@@ -116,9 +116,9 @@ evaluateApplication
                 (   "Attempting to evaluate unimplemented hooked operation "
                 ++  hook ++ ".\nSymbol: " ++ show (getId symbolId)
                 )
-          | otherwise -> trace "###otherwiseReturnUnchanged" $ 
+          | otherwise ->
             return unchanged
-        Just builtinOrAxiomEvaluators -> trace "###jsutBuiltinOrAxiomEvaluators" $ 
+        Just builtinOrAxiomEvaluators ->
             these
                 evaluateWithBuiltins
                 evaluateWithFunctionAxioms
@@ -135,7 +135,7 @@ evaluateApplication
         -> FunctionEvaluators level
         -> Simplifier
             (OrOfExpandedPattern level variable, SimplificationProof level)
-    evaluateBuiltinAndAxioms builtinEvaluator axiomEvaluators = trace "###evalBuiltinAndAxioms" $ do
+    evaluateBuiltinAndAxioms builtinEvaluator axiomEvaluators = do
         (result, _proof) <- applyEvaluator validApp builtinEvaluator
         case result of
             AttemptedFunction.NotApplicable
@@ -220,14 +220,14 @@ evaluateApplication
             ( AttemptedFunction.NotApplicable
             , SimplificationProof
             )
-    evaluateWithSimplificationAxioms (evaluator : evaluators) = trace "###evaluateWithSimplificationAxioms" $ do
+    evaluateWithSimplificationAxioms (evaluator : evaluators) = do
         (applicationResult, _proof) <- applyEvaluator validApp evaluator
 
         let
             simplify
                 :: ExpandedPattern level variable
                 -> Simplifier [ExpandedPattern level variable]
-            simplify result = trace "###simplify" $ do
+            simplify result = do
                 orPatt <- reevaluateFunctions
                     tools
                     substitutionSimplifier
@@ -235,7 +235,7 @@ evaluateApplication
                     result
                 return (OrOfExpandedPattern.extractPatterns orPatt)
         case applicationResult of
-            AttemptedFunction.Applied orResults -> trace "###orResults" $ do
+            AttemptedFunction.Applied orResults -> do
                 when
                     (length (OrOfExpandedPattern.extractPatterns orResults) > 1)
                     -- We should only allow multiple simplification results
@@ -258,7 +258,7 @@ evaluateApplication
                         (OrOfExpandedPattern.make (concat patts))
                     , SimplificationProof
                     )
-            AttemptedFunction.NotApplicable -> trace "###NotApplicable" $ 
+            AttemptedFunction.NotApplicable ->
                 evaluateWithSimplificationAxioms evaluators
 
     evaluateWithBuiltins evaluator = do
@@ -328,7 +328,7 @@ evaluateApplication
     simplifyIfNeeded
         :: ExpandedPattern level variable
         -> Simplifier [ExpandedPattern level variable]
-    simplifyIfNeeded result = trace "###simplifyIfNeeded" $ 
+    simplifyIfNeeded result =
         if result == unchangedPatt
             then return [unchangedPatt]
             else do
@@ -370,7 +370,7 @@ reevaluateFunctions
         , predicate = rewritingCondition
         , substitution = rewrittenSubstitution
         }
-  = trace "###Step.Func.Eval.reEvaluateFunctions" $ do
+  = do
     (pattOr , _proof) <-
         simplifier substitutionSimplifier rewrittenPattern
     (mergedPatt, _proof) <-

@@ -172,7 +172,7 @@ simplifyInternal
     -- TODO: Remove fst
     case fmap fst halfSimplified of
         AndPattern p -> And.simplify tools substitutionSimplifier p
-        ApplicationPattern p -> trace "###simplifyInternalApp" $
+        ApplicationPattern p ->
             --  TODO: Re-evaluate outside of the application and stop passing
             -- the simplifier.
             Application.simplify

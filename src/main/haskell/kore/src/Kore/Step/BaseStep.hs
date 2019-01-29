@@ -300,7 +300,7 @@ stepWithRule
         , right = axiomRightRaw
         , requires = axiomRequiresRaw
         }
-  = trace "###S.BS.stepWithRuleForUnifier" $ do
+  = do
     -- Distinguish configuration (pattern) and axiom variables by lifting them
     -- into 'StepperVariable'.
     let
@@ -336,7 +336,6 @@ stepWithRule
                 a
             -> ExceptT (StepError level variable) Simplifier a
         normalizeUnificationOrSubstitutionError existingVariables action =
-            trace "###normalizeUnificationOrSubstitutionError" $ 
             stepperVariableToVariableForError
                 existingVariables
                 $ withExceptT unificationOrSubstitutionToStepError action
@@ -344,17 +343,17 @@ stepWithRule
     -- Unify the left-hand side of the rewriting axiom with the initial
     -- configuration, producing a substitution (instantiating the axiom to the
     -- configuration) subject to a predicate.
-    (rawOrPredicateSubstitution, rawSubstitutionProof) <- trace "1" $ 
+    (rawOrPredicateSubstitution, rawSubstitutionProof) <-
         normalizeUnificationOrSubstitutionError
             existingVars
-            (trace "1'" $ unificationProcedure'
+            (unificationProcedure'
                 tools
                 substitutionSimplifier
                 axiomLeft
                 startPattern
             )
-    trace "2" $ keepGoodResults $ return $ map
-        (trace "3" $ applyUnificationToRhs
+    keepGoodResults $ return $ map
+        (applyUnificationToRhs
             tools
             substitutionSimplifier
             axiom
@@ -362,7 +361,7 @@ stepWithRule
             expandedPattern
             rawSubstitutionProof
         )
-        (trace "4" $ OrOfExpandedPattern.extractPatterns rawOrPredicateSubstitution)
+        (OrOfExpandedPattern.extractPatterns rawOrPredicateSubstitution)
 
 applyUnificationToRhs
     :: forall level variable .
@@ -406,7 +405,7 @@ applyUnificationToRhs
         {term = initialTerm, substitution = initialSubstitution}
     rawSubstitutionProof
     Predicated {predicate = rawPredicate, substitution = rawSubstitution}
-  = trace "###applyUnificationToRhs" $ do
+  = do
     let
         -- TODO(virgil): Some of the work is duplicated with the
         -- startPattern = mapVariables ConfigurationVariable initialTerm
@@ -430,7 +429,7 @@ applyUnificationToRhs
             , substitution = normalizedSubstitution
             }
         , _proof
-        ) <- trace "#1" $ stepperVariableToVariableForError existingVars
+        ) <-  stepperVariableToVariableForError existingVars
             $ withExceptT unificationOrSubstitutionToStepError
             $ mergePredicatesAndSubstitutionsExcept
                 tools
@@ -450,7 +449,7 @@ applyUnificationToRhs
             , substitution = normalizedRemainderSubstitution
             }
         , _proof
-        ) <- trace "#2" $ stepperVariableToVariableForError existingVars
+        ) <-  stepperVariableToVariableForError existingVars
             $ withExceptT unificationOrSubstitutionToStepError
             $ mergePredicatesAndSubstitutionsExcept
                 tools
@@ -462,7 +461,7 @@ applyUnificationToRhs
 
     let
         negatedRemainder :: Predicate level (StepperVariable variable)
-        negatedRemainder = trace "###negatedRemainder" $ 
+        negatedRemainder =
             (makeNotPredicate . PredicateSubstitution.toPredicate)
                 Predicated
                     { term = ()
@@ -480,7 +479,7 @@ applyUnificationToRhs
         -- the negated unification results and the axiom condition.
         normalizedRemainderPredicate
             :: Predicate level (StepperVariable variable)
-        normalizedRemainderPredicate = trace "###normalizedRemainderPredicate" $ 
+        normalizedRemainderPredicate =
             makeAndPredicate
                 startCondition  -- from initial configuration
                 negatedRemainder
@@ -490,10 +489,10 @@ applyUnificationToRhs
 
     let substitution = Substitution.toMap normalizedSubstitution
     -- Apply substitution to resulting configuration and conditions.
-    rawResult <- trace "#3" $ substitute substitution axiomRight
+    rawResult <- substitute substitution axiomRight
 
     let
-        variablesInLeftAxiom = trace "###variablesInLeftAxiom" $ 
+        variablesInLeftAxiom =
             pureAllVariables axiomLeftRaw
             <> extractAxiomVariables
                 (Predicate.allVariables normalizedCondition)
@@ -513,19 +512,19 @@ applyUnificationToRhs
 
     -- Unwrap internal 'StepperVariable's and collect the variable mappings
     -- for the proof.
-    (variableMapping, result) <- trace "#4" $ 
+    (variableMapping, result) <-
         lift
         $ patternStepVariablesToCommon
             existingVars Map.empty rawResult
-    (variableMapping1, condition) <- trace "#5" $ 
+    (variableMapping1, condition) <-
         lift
         $ predicateStepVariablesToCommon
             existingVars variableMapping normalizedCondition
-    (variableMapping2, remainderPredicate) <- trace "#6" $ 
+    (variableMapping2, remainderPredicate) <-
         lift
         $ predicateStepVariablesToCommon
             existingVars variableMapping1 normalizedRemainderPredicate
-    (variableMapping3, substitutionProof) <- trace "#7" $ 
+    (variableMapping3, substitutionProof) <-
         lift
         $ unificationProofStepVariablesToCommon
             existingVars variableMapping2 rawSubstitutionProof
@@ -545,7 +544,7 @@ applyUnificationToRhs
     let
         orElse :: a -> a -> a
         p1 `orElse` p2 = if Predicate.isFalse condition then p2 else p1
-    trace "#8" $ return
+    return
         ( StepResult
             { rewrittenPattern = Predicated
                 { term = result `orElse` mkBottom_
@@ -636,7 +635,7 @@ stepWithRewriteRule
             , StepProof level variable
             )
         ]
-stepWithRewriteRule tools substitutionSimplifier patt (RewriteRule rule) = trace "###stepWithRule" $
+stepWithRewriteRule tools substitutionSimplifier patt (RewriteRule rule) =
     stepWithRule
             tools
             (UnificationProcedure unificationProcedure)
