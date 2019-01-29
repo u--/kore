@@ -115,19 +115,19 @@ evalKeccak =
                 $ String.asExpandedPattern resultSort result
 
 evalECDSARecover :: Builtin.Function
-evalECDSARecover =
+evalECDSARecover = trace "###evalECDSARecover" $ 
     Builtin.functionEvaluator eval0
 
 eval0 :: Builtin.FunctionImplementation
-eval0 _ _ resultSort [messageHash0, v0, r0, s0] =
+eval0 _ _ resultSort [messageHash0, v0, r0, s0] = trace "###eval0" $ 
     Builtin.getAttemptedFunction $ do
         messageHash <- s2i . Text.unpack <$> String.expectBuiltinString "" messageHash0
         v <- Int.expectBuiltinInt "" v0
         r <- s2i . Text.unpack <$> String.expectBuiltinString "" r0
         s <- s2i  .Text.unpack <$> String.expectBuiltinString "" s0
-        Builtin.appliedFunction
-            $ String.asExpandedPattern resultSort
-            $ Text.pack . bs2s
+        trace "###eval0ret" $ Builtin.appliedFunction $ trace "###String.asExpandedPattern" 
+            $ String.asExpandedPattern resultSort $ trace "###Text.pack . bs2s" 
+            $ Text.pack . bs2s $ trace "###pad 64 0" 
             $ pad 64 0
             $ signatureToKey messageHash r s v
 eval0 _ _ _ _ = Builtin.wrongArity ecsdaRecover
@@ -145,7 +145,7 @@ signatureToKey
     -> Integer
     -> Integer
     -> ByteString
-signatureToKey (traceShowId -> messageHash) (traceShowId -> r) (traceShowId -> s) (traceShowId -> v) = traceShowId $ 
+signatureToKey (traceShowId -> messageHash) (traceShowId -> r) (traceShowId -> s) (traceShowId -> v) = trace "###signatureToKeY" $ traceShowId $ 
     assert (28 <= v && v <= 34)
   $ ByteString.drop 1
   $ encodePoint compressed

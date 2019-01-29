@@ -336,6 +336,7 @@ stepWithRule
                 a
             -> ExceptT (StepError level variable) Simplifier a
         normalizeUnificationOrSubstitutionError existingVariables action =
+            trace "###normalizeUnificationOrSubstitutionError" $ 
             stepperVariableToVariableForError
                 existingVariables
                 $ withExceptT unificationOrSubstitutionToStepError action
@@ -346,7 +347,7 @@ stepWithRule
     (rawOrPredicateSubstitution, rawSubstitutionProof) <- trace "1" $ 
         normalizeUnificationOrSubstitutionError
             existingVars
-            (unificationProcedure'
+            (trace "1'" $ unificationProcedure'
                 tools
                 substitutionSimplifier
                 axiomLeft
@@ -461,7 +462,7 @@ applyUnificationToRhs
 
     let
         negatedRemainder :: Predicate level (StepperVariable variable)
-        negatedRemainder =
+        negatedRemainder = trace "###negatedRemainder" $ 
             (makeNotPredicate . PredicateSubstitution.toPredicate)
                 Predicated
                     { term = ()
@@ -479,7 +480,7 @@ applyUnificationToRhs
         -- the negated unification results and the axiom condition.
         normalizedRemainderPredicate
             :: Predicate level (StepperVariable variable)
-        normalizedRemainderPredicate =
+        normalizedRemainderPredicate = trace "###normalizedRemainderPredicate" $ 
             makeAndPredicate
                 startCondition  -- from initial configuration
                 negatedRemainder
@@ -492,7 +493,7 @@ applyUnificationToRhs
     rawResult <- trace "#3" $ substitute substitution axiomRight
 
     let
-        variablesInLeftAxiom =
+        variablesInLeftAxiom = trace "###variablesInLeftAxiom" $ 
             pureAllVariables axiomLeftRaw
             <> extractAxiomVariables
                 (Predicate.allVariables normalizedCondition)

@@ -116,9 +116,9 @@ evaluateApplication
                 (   "Attempting to evaluate unimplemented hooked operation "
                 ++  hook ++ ".\nSymbol: " ++ show (getId symbolId)
                 )
-          | otherwise ->
+          | otherwise -> trace "###otherwiseReturnUnchanged" $ 
             return unchanged
-        Just builtinOrAxiomEvaluators ->
+        Just builtinOrAxiomEvaluators -> trace "###jsutBuiltinOrAxiomEvaluators" $ 
             these
                 evaluateWithBuiltins
                 evaluateWithFunctionAxioms
@@ -135,7 +135,7 @@ evaluateApplication
         -> FunctionEvaluators level
         -> Simplifier
             (OrOfExpandedPattern level variable, SimplificationProof level)
-    evaluateBuiltinAndAxioms builtinEvaluator axiomEvaluators = do
+    evaluateBuiltinAndAxioms builtinEvaluator axiomEvaluators = trace "###evalBuiltinAndAxioms" $ do
         (result, _proof) <- applyEvaluator validApp builtinEvaluator
         case result of
             AttemptedFunction.NotApplicable
@@ -220,14 +220,14 @@ evaluateApplication
             ( AttemptedFunction.NotApplicable
             , SimplificationProof
             )
-    evaluateWithSimplificationAxioms (evaluator : evaluators) = do
+    evaluateWithSimplificationAxioms (evaluator : evaluators) = trace "###evaluateWithSimplificationAxioms" $ do
         (applicationResult, _proof) <- applyEvaluator validApp evaluator
 
         let
             simplify
                 :: ExpandedPattern level variable
                 -> Simplifier [ExpandedPattern level variable]
-            simplify result = do
+            simplify result = trace "###simplify" $ do
                 orPatt <- reevaluateFunctions
                     tools
                     substitutionSimplifier
@@ -235,7 +235,7 @@ evaluateApplication
                     result
                 return (OrOfExpandedPattern.extractPatterns orPatt)
         case applicationResult of
-            AttemptedFunction.Applied orResults -> do
+            AttemptedFunction.Applied orResults -> trace "###orResults" $ do
                 when
                     (length (OrOfExpandedPattern.extractPatterns orResults) > 1)
                     -- We should only allow multiple simplification results
@@ -258,7 +258,7 @@ evaluateApplication
                         (OrOfExpandedPattern.make (concat patts))
                     , SimplificationProof
                     )
-            AttemptedFunction.NotApplicable ->
+            AttemptedFunction.NotApplicable -> trace "###NotApplicable" $ 
                 evaluateWithSimplificationAxioms evaluators
 
     evaluateWithBuiltins evaluator = do
@@ -328,7 +328,7 @@ evaluateApplication
     simplifyIfNeeded
         :: ExpandedPattern level variable
         -> Simplifier [ExpandedPattern level variable]
-    simplifyIfNeeded result =
+    simplifyIfNeeded result = trace "###simplifyIfNeeded" $ 
         if result == unchangedPatt
             then return [unchangedPatt]
             else do
